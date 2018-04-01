@@ -1,0 +1,53 @@
+<html>
+<head>
+<title></title>
+
+<script>
+var update_temperature = function() {
+  getJSON('https://s3.amazonaws.com/scepool/xw110data.json',
+  function(err, data) {
+    if (err !== null) {
+      console.log('Something went wrong: ' + err);
+    } else {
+      console.log(data);
+      let element = document.getElementById('pooltemperature');
+      element.innerHTML = '';
+      element.innerHTML += '<h3>';
+      element.innerHTML += data['sensor1'];
+      element.innerHTML += '</h3>';
+      element.innerHTML += '<h4>Updated: ';
+      element.innerHTML += data['time'];
+      element.innerHTML += '</h4>';
+    }
+  })
+};
+
+var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
+
+setInterval(update_temperature, 600000);
+
+update_temperature();
+</script>
+</head>
+</body>
+
+<h1> Pool Temperature </h1>
+<div id="pooltemperature">
+
+</div>
+
+</body>
+</html>
